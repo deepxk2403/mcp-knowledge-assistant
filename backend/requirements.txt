@@ -1,0 +1,15 @@
+# Backend API
+fastapi
+uvicorn[standard]
+python-multipart
+
+# AI / data stack (shared with the MCP server)
+fastmcp
+fastembed
+qdrant-client
+python-dotenv
+tavily-python
+langchain
+langgraph
+langchain-mcp-adapters
+langchain-openai

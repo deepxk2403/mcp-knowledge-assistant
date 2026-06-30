@@ -1,0 +1,9 @@
+fastmcp
+fastembed
+qdrant-client
+python-dotenv
+tavily-python
+langchain
+langgraph
+langchain-mcp-adapters
+langchain-openai
