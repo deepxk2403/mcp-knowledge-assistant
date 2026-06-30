@@ -25,6 +25,10 @@ dist/
 *.log
 server.log
 
+# Documents
+*.docx
+*.pdf
+
 # Editors / OS
 .vscode/
 .idea/
