@@ -60,8 +60,14 @@ export default function NotesView() {
 
   async function remove(id: string) {
     if (!confirm("Delete this note?")) return;
-    await deleteNote(id);
-    refresh();
+    try {
+      await deleteNote(id);
+      setNotes((current) => current.filter((note) => note.id !== id));
+      await refresh();
+    } catch (error) {
+      console.error("Failed to delete note", error);
+      alert("Failed to delete note. Please try again.");
+    }
   }
 
   return (

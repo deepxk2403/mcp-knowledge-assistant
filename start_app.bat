@@ -11,6 +11,15 @@ echo   MCP Knowledge Assistant - starting up
 echo ============================================
 echo.
 
+REM --- 0. Clean restart: stop any old servers still holding the ports, so the
+REM     freshly launched ones always run the current code (never a stale build).
+echo [0/4] Clearing any old servers on ports 3000/8000/8001...
+for %%P in (3000 8000 8001) do (
+  for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%%P ^| findstr LISTENING') do (
+    taskkill /PID %%a /F >nul 2>&1
+  )
+)
+
 REM --- 1. Ensure Docker engine + Qdrant container (handled by PowerShell) ---
 echo [1/4] Checking Docker and Qdrant...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
@@ -46,6 +55,9 @@ echo ============================================
 echo   All services launched in separate windows.
 echo   Close those windows (or run stop_app.bat)
 echo   to shut everything down.
+echo.
+echo   Tip: if the UI ever looks out of date, press
+echo   Ctrl+Shift+R in the browser for a hard refresh.
 echo ============================================
 echo.
 echo This launcher window can be closed.

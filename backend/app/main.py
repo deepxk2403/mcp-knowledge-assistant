@@ -7,7 +7,7 @@ Run (from the backend/ directory):
     uvicorn app.main:app --reload --port 8000
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import CORS_ORIGINS, QDRANT_URL
@@ -15,7 +15,7 @@ from app.db.database import init_db
 from app.routers import chat, history, notes
 from app.services import notes_service
 
-app = FastAPI(title="MCP Knowledge Assistant API", version="0.2.0")
+app = FastAPI(title="MCP Knowledge Assistant API", version="0.2.1")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,6 +24,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def no_store(request: Request, call_next):
+    """Prevent browsers/proxies from caching API reads, so a list fetched
+    right after a create/delete always reflects the current state."""
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.on_event("startup")

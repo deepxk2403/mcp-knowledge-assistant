@@ -8,11 +8,15 @@ async function json<T>(res: Response): Promise<T> {
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
 }
 
+// Always hit the network for reads — never let the browser serve a stale
+// cached list (e.g. after a delete). "no-store" disables HTTP caching.
+const GET = (url: string) => fetch(url, { cache: "no-store" });
+
 // --- Notes ---
-export const listNotes = () => fetch("/notes").then((r) => json<Note[]>(r));
+export const listNotes = () => GET("/notes").then((r) => json<Note[]>(r));
 
 export const searchNotes = (q: string) =>
-  fetch(`/notes/search?q=${encodeURIComponent(q)}&top_k=10`).then((r) =>
+  GET(`/notes/search?q=${encodeURIComponent(q)}&top_k=10`).then((r) =>
     json<Note[]>(r)
   );
 
@@ -42,10 +46,10 @@ export const deleteNote = (id: string) =>
 
 // --- Sessions / history ---
 export const listSessions = () =>
-  fetch("/sessions").then((r) => json<Session[]>(r));
+  GET("/sessions").then((r) => json<Session[]>(r));
 
 export const getMessages = (sessionId: string) =>
-  fetch(`/sessions/${sessionId}/messages`).then((r) => json<Message[]>(r));
+  GET(`/sessions/${sessionId}/messages`).then((r) => json<Message[]>(r));
 
 export const deleteSession = (sessionId: string) =>
   fetch(`/sessions/${sessionId}`, { method: "DELETE" }).then((r) =>
